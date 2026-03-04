@@ -1,0 +1,72 @@
+package apicontractdesign.service;
+
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import apicontractdesign.domain.User;
+import apicontractdesign.dto.UserRequestDto;
+import apicontractdesign.repository.UserRepository;
+
+/**
+ * Service 구현체
+ * - 내부 비즈니스 로직 + 외부 Open API 호출
+ */
+@Service
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+
+    // 생성자 주입
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    /**
+     * [1번 프로젝트]
+     * 내부 User 생성 로직
+     */
+    @Override
+    public User createUser(UserRequestDto dto) {
+        User user = new User(1L, dto.getName());
+        return userRepository.save(user);
+    }
+
+    /**
+     * [2번 프로젝트]
+     * 네이버 회원정보 조회
+     * - Authorization 헤더가 없으면 더미 JSON 반환
+     * - 실제 토큰이 있으면 RestTemplate로 네이버 API 호출
+     */
+    @Override
+    public String getNaverUserProfile(String authorization) {
+
+        // 브라우저 테스트용: Authorization 헤더 없으면 더미 반환
+        if (authorization == null || authorization.isEmpty()) {
+            return "{ \"id\": \"dummy\", \"name\": \"Test User\", \"email\": \"test@example.com\" }";
+        }
+
+        // 네이버 Open API URL
+        String url = "https://openapi.naver.com/v1/nid/me";
+
+        try {
+            // RestTemplate 생성
+            RestTemplate restTemplate = new RestTemplate();
+
+            // HTTP 헤더 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", authorization);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            // GET 요청
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+            // 그대로 반환
+            return response.getBody();
+
+        } catch (Exception e) {
+            // 호출 실패 시 에러 메시지 반환 (500 대신 테스트용)
+            return "{ \"error\": \"Failed to call Naver API\", \"message\": \"" + e.getMessage() + "\" }";
+        }
+    }
+}

@@ -1,0 +1,111 @@
+package apicontractdesign.service;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Map;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import apicontractdesign.domain.User;
+import apicontractdesign.dto.UserRequestDto;
+import apicontractdesign.repository.UserRepository;
+
+@Service
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+
+    private final String clientId = "AipfQlUUw8jMr4oAQIPi";
+    private final String clientSecret = "RCZ5kQhJmQ";
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    // ===== 프로젝트 1 =====
+    @Override
+    public User createUser(UserRequestDto dto) {
+        User user = new User(1L, dto.getName());
+        return userRepository.save(user);
+    }
+
+    // ===== 네이버 로그인 URL 생성 =====
+    @Override
+    public String naverLogin() {
+        try {
+            String callbackUrl = "http://localhost:8080/api/naver/callback";
+            String redirectUri = URLEncoder.encode(callbackUrl, "UTF-8");
+
+            return "https://nid.naver.com/oauth2.0/authorize"
+                    + "?response_type=code"
+                    + "&client_id=" + clientId
+                    + "&redirect_uri=" + redirectUri
+                    + "&state=naver-login";
+
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // ===== code → access_token =====
+    @Override
+    public String requestAccessToken(String code) {
+
+        String tokenUrl = "https://nid.naver.com/oauth2.0/token";
+
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .fromHttpUrl(tokenUrl)
+                .queryParam("grant_type", "authorization_code")
+                .queryParam("client_id", clientId)
+                .queryParam("client_secret", clientSecret)
+                .queryParam("code", code)
+                .queryParam("state", "naver-login");
+
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(builder.toUriString(), String.class);
+    }
+
+    // ===== access_token 추출 =====
+    @Override
+    public String extractAccessToken(String tokenResponse) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(tokenResponse);
+            return jsonNode.get("access_token").asText();
+        } catch (Exception e) {
+            throw new RuntimeException("access_token 추출 실패", e);
+        }
+    }
+
+    // ===== 네이버 프로필 조회 =====
+    @Override
+    public Map<String, Object> requestNaverProfile(String accessToken) {
+
+        String profileUrl = "https://openapi.naver.com/v1/nid/me";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<Map> response = restTemplate.exchange(
+                profileUrl,
+                HttpMethod.GET,
+                request,
+                Map.class
+        );
+
+        return response.getBody(); // 🔥 데이터만 반환
+    }
+}

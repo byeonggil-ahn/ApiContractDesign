@@ -1,0 +1,54 @@
+package apicontractdesign.controller;
+
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import apicontractdesign.service.UserService;
+
+/**
+ * Controller 계층
+ * - HTTP 요청/응답 담당
+ * - 외부 Open API 호출은 Service로 위임
+ */
+@RestController
+@RequestMapping("/api/naver")
+public class UserController {
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    /**
+     * [프로젝트 2]
+     * 네이버 로그인 시작
+     * - 네이버 OAuth 인가 URL 반환
+     * - 프론트는 이 URL로 리다이렉트만 하면 됨
+     */
+    @GetMapping("/login")
+    public String naverLogin() {
+        return userService.naverLogin();
+    }
+
+    /**
+     * [프로젝트 2]
+     * 네이버 OAuth 콜백
+     * - 네이버가 redirect_uri로 자동 호출
+     * - code만 받아서 다음 단계(Service)로 넘길 준비
+     */
+    @GetMapping("/callback")
+    public ResponseEntity<Map<String, Object>> naverCallback( @RequestParam String code) {
+        String tokenResponse = userService.requestAccessToken(code);
+        String accessToken = userService.extractAccessToken(tokenResponse);
+
+        Map<String, Object> profile = userService.requestNaverProfile(accessToken);
+
+        return ResponseEntity.ok(profile);
+    }
+}

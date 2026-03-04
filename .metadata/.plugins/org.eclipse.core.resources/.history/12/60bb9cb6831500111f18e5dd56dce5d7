@@ -1,0 +1,64 @@
+package apicontractdesign.service;
+
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import apicontractdesign.domain.User;
+import apicontractdesign.dto.UserRequestDto;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+@Service
+public class UserServiceImpl implements UserService {
+
+    @Value("${naver.api.profile-url}")
+    private String profileUrl;
+
+    @Override
+    public String getNaverProfile(String authorization) {
+
+        try {
+            URL url = new URL(profileUrl);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+            con.setRequestMethod("GET");
+            con.setRequestProperty("Authorization", authorization);
+
+            BufferedReader br;
+            if (con.getResponseCode() == 200) {
+                br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            } else {
+                br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+            }
+
+            StringBuilder response = new StringBuilder();
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                response.append(line);
+            }
+
+            br.close();
+            return response.toString();
+
+        } catch (Exception e) {
+            throw new RuntimeException("네이버 사용자 프로필 조회 실패", e);
+        }
+    }
+
+	@Override
+	public User createUser(UserRequestDto dto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getNaverUserProfile(String authorization) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}}

@@ -1,0 +1,15 @@
+1771858184783	Rename package 'layeredarchitecture.controller'
+1771858192215	Copy package
+1771858201321	Delete element
+1771858276465	Rename package 'controller'
+1771858360391	Rename package 'layeredarchitecture'
+1771858535467	Delete element
+1771858714404	Rename package 'layeredarchitecture.controller'
+1771858730597	Rename package 'layeredarchitecture.domain'
+1771858738679	Rename package 'layeredarchitecture.dto'
+1771858748621	Rename package 'layeredarchitecture.exception'
+1771858762074	Rename package 'layeredarchitecture.repository'
+1771858775960	Rename package 'layeredarchitecture.service'
+1772032339305	Move compilation unit
+1772034163881	Delete element
+1772034178710	Rename package 'apicontractdesign.controller.view'

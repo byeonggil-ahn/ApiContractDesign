@@ -1,0 +1,25 @@
+package apicontractdesign.service;
+
+import apicontractdesign.domain.User;
+import apicontractdesign.dto.UserRequestDto;
+
+public interface UserService {
+
+    /**
+     * [1번 프로젝트]
+     * 내부 User 생성
+     */
+    User createUser(UserRequestDto dto);
+
+    /**
+     * [2번 프로젝트 - Open API]
+     * 네이버 로그인 API 가져오 (로그인 페이지 URL 생성)
+     */
+    String naverLogin();
+    
+//     [2번 프로젝트 - Open API]
+//     🔹 네이버 로그인 후 프로필조희를 위한 access token 요청
+    String requestAccessToken(String code);
+    String extractAccessToken(String tokenResponse);
+    String requestNaverProfile(String accessToken);
+}

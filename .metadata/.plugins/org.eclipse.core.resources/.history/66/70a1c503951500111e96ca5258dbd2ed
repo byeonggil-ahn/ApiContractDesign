@@ -1,0 +1,66 @@
+package apicontractdesign.service;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
+import org.springframework.stereotype.Service;
+
+import apicontractdesign.domain.User;
+import apicontractdesign.dto.UserRequestDto;
+import apicontractdesign.repository.UserRepository;
+
+/**
+ * Service 구현체
+ * - 비즈니스 로직 처리
+ * - Repository 조합
+ */
+@Service
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+
+    // 생성자 주입 (기존 그대로)
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    /**
+     * [프로젝트 1]
+     * 내부 User 생성
+     */
+    @Override
+    public User createUser(UserRequestDto dto) {
+        User user = new User(1L, dto.getName());
+        return userRepository.save(user);
+    }
+
+    /**
+     * [프로젝트 2]
+     * 네이버 로그인 시작
+     * - 외부 Open API 계약
+     */
+    @Override
+    public String naverLogin() {
+        try {
+            String clientId = "AipfQlUUw8jMr4oAQIPi";
+
+            // 네이버 콘솔에 등록한 콜백 URL과 정확히 일치해야 함
+            String redirectUri = URLEncoder.encode(
+                "http://localhost:8080/login/oauth2/code/naver",
+                "UTF-8"
+            );
+
+            // CSRF 방지용 임의 값 (지금은 고정값도 OK)
+            String state = URLEncoder.encode("naver-login", "UTF-8");
+
+            return "https://nid.naver.com/oauth2.0/authorize"
+                    + "?response_type=code"
+                    + "&client_id=" + clientId
+                    + "&redirect_uri=" + redirectUri
+                    + "&state=" + state;
+
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("네이버 로그인 URL 생성 실패", e);
+        }
+    }
+}

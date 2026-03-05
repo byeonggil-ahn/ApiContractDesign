@@ -63,9 +63,7 @@ Service 계층에서 외부 Open API 호출 로직을 담당하도록 책임을 
 ---
 
 ## API 요청 흐름
-
-## API 요청 흐름
-
+```
 Client  
 ↓  
 Controller (`/api/naver/login`)  
@@ -85,7 +83,7 @@ Naver 사용자 정보 API 호출
 JSON 응답 수신  
 ↓  
 Client Response
-
+```
 ---
 
 ## 설계 포인트
@@ -95,18 +93,7 @@ Client Response
 - **Service** : 외부 API 호출 및 비즈니스 로직 처리  
 - **Repository** : 데이터 저장소 접근  
 - **Domain** : 애플리케이션에서 사용하는 도메인 객체  
-- **DTO** : 요청 데이터 전달 객체  
-
----
-
-## API 요청 흐름
-
-1. 클라이언트가 `/api/naver/login` 요청 → 네이버 OAuth 로그인 URL 요청  
-2. 서버가 OAuth 인가 URL 생성 후 클라이언트 반환  
-3. 사용자가 네이버 로그인 완료 → `/api/naver/callback` 호출, `code` 전달  
-4. 서버가 `code` 이용 → 네이버 토큰 발급 API 요청 → `access_token` 발급  
-5. 발급받은 `access_token` → Authorization 헤더에 포함 → 네이버 사용자 정보 조회 API 호출  
-6. JSON 응답 수신 후 클라이언트에게 반환  
+- **DTO** : 요청 데이터 전달 객체   
 
 ---
 

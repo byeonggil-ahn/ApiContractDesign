@@ -64,27 +64,27 @@ Service 계층에서 외부 Open API 호출 로직을 담당하도록 책임을 
 
 ## API 요청 흐름
 
-```
-Client
-  ↓
-Controller (/api/naver/login)
-  ↓
-Naver OAuth 인가 요청
-  ↓
-Naver → callback 호출
-  ↓
-Controller (/api/naver/callback)
-  ↓
-Service
-  ↓
-Access Token 요청
-  ↓
-Naver 사용자 정보 API 호출
-  ↓
-JSON 응답 수신
-  ↓
+## API 요청 흐름
+
+Client  
+↓  
+Controller (`/api/naver/login`)  
+↓  
+Naver OAuth 인가 요청  
+↓  
+Naver → Callback 호출  
+↓  
+Controller (`/api/naver/callback`)  
+↓  
+Service  
+↓  
+Access Token 요청  
+↓  
+Naver 사용자 정보 API 호출  
+↓  
+JSON 응답 수신  
+↓  
 Client Response
-```
 
 ---
 

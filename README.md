@@ -101,11 +101,10 @@ Client Response
 
 본 프로젝트는 로컬 개발 환경(Localhost)에서 네이버 Open API를 연동하여  
 외부 서비스와 내부 애플리케이션 간 데이터 흐름을 설계하는 것을 목표로 구현하였습니다.
-외부 API를 단순히 호출하는 것에 그치지 않고,  
-OAuth 인증 과정을 기반으로 access_token을 발급받고,  
+외부 API를 단순히 호출하는 것에 그치지 않고,OAuth 인증 과정을 기반으로 access_token을 발급받고,  
 해당 토큰을 이용하여 사용자 정보를 조회하는 전체 API 호출 흐름을 직접 구현하였습니다.
-특히 네이버 Open API에서 전달되는 JSON 형식의 응답 데이터를 처리하는 과정에서 access_token을 추출하고 Authorization 헤더에 
-토큰을 포함하여 사용자 프로필 조회 API를 호출하는 구조를 구현하면서  
+특히 네이버 Open API에서 전달되는 JSON 형식의 응답 데이터를 처리하는 과정에서 
+access_token을 추출하고 Authorization 헤더에 토큰을 포함하여 사용자 프로필 조회 API를 호출하는 구조를 구현하면서  
 외부 인증 기반 API 연동 흐름을 이해할 수 있었습니다.
 또한 Controller와 Service 계층을 분리하여  
 HTTP 요청 처리와 외부 API 호출 로직의 책임을 나누는 구조로 설계하면서  

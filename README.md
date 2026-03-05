@@ -23,16 +23,17 @@ API Contract 기반 설계 방식 학습
 개발 인원: 1명 (개인 프로젝트)
 개발 환경: Eclipse 기반 STS 3
 
-기술 스택
-구분	기술
-Language	Java 17
-Framework	Spring Boot
-IDE	Eclipse (STS 3)
-Web	Spring MVC
-HTTP Client	RestTemplate
-Data Format	JSON
-Build Tool	Gradle
-설계 포인트
+## 기술 스택
+
+| 구분 | 기술 |
+|---|---|
+| Language | Java 17 |
+| Framework | Spring Boot |
+| IDE | Eclipse (STS 3) |
+| Web | Spring MVC |
+| HTTP Client | RestTemplate |
+| Data Format | JSON |
+| Build Tool | Gradle |
 
 Controller 계층에서는 HTTP 요청과 응답 처리만 담당하도록 설계
 
